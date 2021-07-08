@@ -34,7 +34,7 @@ wr.close()
 fn = 512
 X = np.arange(0,fn,1)
 Y = np.frombuffer(data, dtype=np.int16)
-Y1 = Y[0:fn]
+Y1 = Y[0:fn]/(2.0**(width*8))
 
 # 読み込み結果をグラフで確認したいとき
 # plt.plot(X,Y1)
@@ -44,4 +44,4 @@ Y1 = Y[0:fn]
 with open('wave.txt', 'w') as f:
     f.write("%d\n" % fn)
     for d in Y1:
-        f.write("%d\n" % d)
+        f.write("%.12f\n" % d)

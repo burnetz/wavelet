@@ -1,3 +1,4 @@
+#include <stdio.h>
 #include <math.h>
 #include "FftAnalyze00.h"
 #include "Fft00.h"
@@ -96,49 +97,90 @@ void CFftAnalyze00::Window(double *output, int winLen, int winType, double &scal
             output[i] = .54 - .46 * cos(2 * _PI * i / winLen);
             break;
         case 02: //ブラックマン
-            output[i] = .42 - .5 * cos(2 * _PI * i / winLen) + .08 * cos(4*_PI*i / winLen);
+            output[i] = .42 - .5 * cos(2 * _PI * i / winLen) + .08 * cos(4 * _PI * i / winLen);
             break;
         case 03: //ガウス
-            output[i] = exp(-4.5*(2.0*i - winLen)/winLen * (2.0*i - winLen)/winLen);
+            output[i] = exp(-4.5 * (2.0 * i - winLen) / winLen * (2.0 * i - winLen) / winLen);
             break;
         case 04: //方形
             output[i] = 1.0;
             break;
         }
 
-        scale += output[i]*output[i];
+        scale += output[i] * output[i];
     }
 
     scale /= winLen;
-    scale = 1.0/sqrt(scale);
+    scale = 1.0 / sqrt(scale);
 }
 
-bool CFftAnalyze00::Fft(double* outAmp, double* outPhase, double* input){
-    if(m_pWork[0] == NULL){
+bool CFftAnalyze00::Fft(double *outAmp, double *outPhase, double *input)
+{
+    if (m_pWork[0] == NULL)
+    {
         return false;
     }
 
-    for(int i = 0; i < m_nFftLen; i++){
+    for (int i = 0; i < m_nFftLen; i++)
+    {
         m_pReal[i] = input[i];
         m_pImag[i] = 0.0;
     }
 
-    for(int i = 0; i < m_nFftLen; i++){
+    for (int i = 0; i < m_nFftLen; i++)
+    {
         m_pReal[i] *= m_pWindow[i];
         m_pImag[i] *= m_pWindow[i];
     }
 
     m_pFft->Fft(m_pReal, m_pImag, 1);
 
-    for(int i = 0; i < m_nFftLen; i++){
+    for (int i = 0; i < m_nFftLen; i++)
+    {
         m_pReal[i] *= m_nScale;
         m_pImag[i] *= m_nScale;
     }
 
-    for(int i = 0; i < m_nFftLen; i++){
-        outAmp[i] = sqrt(m_pReal[i]*m_pReal[i] + m_pImag[i]*m_pImag[i]);
+    for (int i = 0; i < m_nFftLen; i++)
+    {
+        outAmp[i] = sqrt(m_pReal[i] * m_pReal[i] + m_pImag[i] * m_pImag[i]);
         outPhase[i] = atan2(m_pImag[i], m_pReal[i]);
     }
 
     return true;
 }
+
+#ifdef FFT_TEST
+
+int main()
+{
+    int n;
+
+    scanf("%d", &n);
+
+    double input[n];
+    for (int i = 0; i < n; i++){
+        scanf("%lf", &input[i]);
+    }
+
+    CFftAnalyze00* cfta = new CFftAnalyze00();
+
+    int ex = 0;
+    int n2 = n;
+    while(n2 % 2 == 0){
+        ex++;
+        n2 /= 2;
+    }
+
+    cfta->Prepare(ex, 3);
+
+    double amp[n], phase[n];
+
+    cfta->Fft(amp, phase, input);
+
+    for(int i = 0; i < n; i++){
+        printf("%f %f\n", amp[i], phase[i]);
+    }
+}
+
+#endif
