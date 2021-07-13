@@ -1,5 +1,6 @@
 #include <math.h>
 #include "Fft00.h"
+#include <stdio.h>
 
 #define _PI 3.14159265358979323846264338327950288419716939937510
 
@@ -139,7 +140,7 @@ void CFft00::BitReverce(double *buf, double *a, int ex)
         int bit = 0;
         for (int j = 0; j < ex; j++)
         {
-            if (i & (i << j))
+            if (i & (1 << j))
             {
                 bit |= (1 << (ex - j - 1));
             }
@@ -151,3 +152,26 @@ void CFft00::BitReverce(double *buf, double *a, int ex)
         a[i] = buf[i];
     }
 }
+
+#ifdef FFT00_TEST 
+
+int main(){
+    double input[8] = {1,1,0.5,0.5,0,0,0,0};
+
+    int n = 8;
+
+    CFft00* fft = new CFft00;
+
+    fft->Prepare(3);
+
+    double imag[8];
+    fft->Fft(input, imag, 1);
+
+    for(int i = 0; i < 8; i++){
+        printf("%f %f\n", input[i], imag[i]);
+    }
+
+    return 0;
+}
+
+#endif
