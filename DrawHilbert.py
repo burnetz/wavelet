@@ -14,5 +14,20 @@ with open("hilbertReal.txt", "r") as f:
 
 #X, Y = zip(*sorted(zip(X,Y)))
 
+plt.title("Real")
 plt.plot(X,Y)
 plt.savefig('hilbertReal.png')
+
+#plt.close()
+X = []
+Y = []
+with open("hilbertImag.txt", "r") as f:
+    lines = f.read().splitlines()
+    for line in lines:
+        xy = line.split(" ")
+        X.append(float(xy[0]))
+        Y.append(float(xy[1]))
+
+plt.title("Real, Imag")
+plt.plot(X,Y)
+plt.savefig('hilbertImag.png')

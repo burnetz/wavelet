@@ -102,7 +102,7 @@ bool CHilbert00::Hilbert(double *outputReal, double *outputImag,
     if(freq1 < freq0){
         double d = freq0;
         freq0 = freq1;
-        freq1 = freq0;
+        freq1 = d; //多分誤植。やりたいことはおそらくスワップ
     }
     if(freq0 < 0.0)freq0 = 0.0;
     if(freq0 > 0.5)freq0 = 0.5;
@@ -218,12 +218,10 @@ int main(int argc, char* argv[])
     }
 
     for(int i = 0; i < n; i++){
-        //printf("%f %f\n", amp[i], phase[i]);
-
-        if(strcmp(argv[1], "real")){
+        if(strcmp(argv[1], "real") == 0){
             printf("%d %f\n", i, oreal[i]);
         }
-        if(strcmp(argv[1], "imag")){
+        if(strcmp(argv[1], "imag") == 0){
             printf("%d %f\n", i, oimag[i]);
         }
     }
