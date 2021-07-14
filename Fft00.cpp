@@ -164,9 +164,17 @@ int main(){
 
     fft->Prepare(3);
 
-    double imag[8];
+    double imag[8] = {0,0,1,1,0,0,-1,-1};
     fft->Fft(input, imag, 1);
 
+    printf("FFT : \n");
+    for(int i = 0; i < 8; i++){
+        printf("%f %f\n", input[i], imag[i]);
+    }
+
+    fft->Fft(input, imag, -1);
+
+    printf("IFFT : \n");
     for(int i = 0; i < 8; i++){
         printf("%f %f\n", input[i], imag[i]);
     }
