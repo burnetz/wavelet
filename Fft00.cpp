@@ -56,10 +56,12 @@ bool CFft00::Prepare(int ex)
 
     for (int i = 0; i < m_nLength; i++)
     {
-        m_pFftSin[i] = sin(-_PI * 2 * i / m_nLength);
-        m_pFftCos[i] = cos(-_PI * 2 * i / m_nLength);
-        m_pIfftSin[i] = sin(_PI * 2 * i / m_nLength);
-        m_pIfftCos[i] = cos(_PI * 2 * i / m_nLength);
+        //本とは符号が逆だが、こうするとwolfram等のデフォルトと同じ
+        //ただしwikipedia等の逆
+        m_pFftSin[i] = sin(_PI * 2 * i / m_nLength);
+        m_pFftCos[i] = cos(_PI * 2 * i / m_nLength);
+        m_pIfftSin[i] = sin(-_PI * 2 * i / m_nLength);
+        m_pIfftCos[i] = cos(-_PI * 2 * i / m_nLength);
     }
 
     return true;
@@ -131,6 +133,53 @@ bool CFft00::Fft(double *real, double *imag, int inv)
     return true;
 }
 
+//real: 入力信号の実数部
+//imag: 入力信号の虚数部
+//inv: 1でFFT, -1でIFFTの計算を行う
+bool CFft00::Dft(double *real, double *imag, int inv)
+{
+    double *sinTable;
+    double *cosTable;
+    if (inv == 1)
+    {
+        sinTable = m_pFftSin;
+        cosTable = m_pFftCos;
+    }
+    else
+    {
+        sinTable = m_pIfftSin;
+        cosTable = m_pIfftCos;
+    }
+
+    double* tmpReal = new double[m_nLength];
+    double* tmpImag = new double[m_nLength];
+    for(int t = 0; t < m_nLength; t++){
+        tmpReal[t] = tmpImag[t] = 0;
+        for(int x = 0; x < m_nLength; x++){
+            int w = t*x%m_nLength;
+            tmpReal[t] += real[x]*cosTable[w] - imag[x]*sinTable[w];
+            tmpImag[t] += real[x]*sinTable[w] + imag[x]*cosTable[w];
+        }
+    }
+
+    for(int i = 0; i < m_nLength; i++){
+        real[i] = tmpReal[i];
+        imag[i] = tmpImag[i];
+    }
+    if (inv != 1)
+    {
+        double nrml = (double)m_nLength;
+
+        for (int i = 0; i < m_nLength; i++)
+        {
+            real[i] /= nrml;
+            imag[i] /= nrml;
+        }
+    }
+
+    return true;
+}
+
 void CFft00::BitReverce(double *buf, double *a, int ex)
 {
     int length = 1 << ex;
@@ -164,7 +213,7 @@ int main(){
 
     fft->Prepare(3);
 
-    double imag[8] = {0,0,1,1,0,0,-1,-1};
+    double imag[8] = {0,0,0,0,0,0,0,0};//{0,0,1,1,0,0,-1,-1};
     fft->Fft(input, imag, 1);
 
     printf("FFT : \n");
@@ -175,6 +224,37 @@ int main(){
     fft->Fft(input, imag, -1);
 
     printf("IFFT : \n");
+    for(int i = 0; i < 8; i++){
+        printf("%f %f\n", input[i], imag[i]);
+    }
+
+    return 0;
+}
+
+#endif
+
+#ifdef DFT00_TEST 
+
+int main(){
+    double input[8] = {1,1,0.5,0.5,0,0,0,0};
+
+    int n = 8;
+
+    CFft00* fft = new CFft00;
+
+    fft->Prepare(3);
+
+    double imag[8] = {0,0,1,1,0,0,-1,-1};
+    fft->Dft(input, imag, 1);
+
+    printf("DFT : \n");
+    for(int i = 0; i < 8; i++){
+        printf("%f %f\n", input[i], imag[i]);
+    }
+
+    fft->Dft(input, imag, -1);
+
+    printf("IDFT : \n");
     for(int i = 0; i < 8; i++){
         printf("%f %f\n", input[i], imag[i]);
     }
