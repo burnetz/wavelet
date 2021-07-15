@@ -146,7 +146,7 @@ bool CHilbert00::Hilbert(double *outputReal, double *outputImag,
 
     for(i = 0; i < inputN; i++){
         outputReal[i] = m_pReal[i];
-        outputImag[i] = m_pImag[i];
+        outputImag[i] = -m_pImag[i]; //多分虚部の符号が逆
     }
 
     return true;
@@ -223,6 +223,24 @@ int main(int argc, char* argv[])
         }
         if(strcmp(argv[1], "imag") == 0){
             printf("%d %f\n", i, oimag[i]);
+        }
+    }
+
+    if(strcmp(argv[1], "power") == 0){
+        double output[n];
+        chilb->InstantPower(output, oreal, oimag, n);
+
+        for(int i = 0; i < n; i++){
+            printf("%d %f\n", i, output[i]);
+        }
+    }
+
+    if(strcmp(argv[1], "freq") == 0){
+        double output[n];
+        chilb->InstantFreq(output, oreal, oimag, n);
+
+        for(int i = 0; i < n; i++){
+            printf("%d %f\n", i, output[i]);
         }
     }
 }
