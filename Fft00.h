@@ -5,6 +5,7 @@ class CFft00{
 
     bool Prepare(int ex);
     bool Fft(double* real, double* imag, int inv);
+    bool Dft(double* real, double* imag, int inv);
 
     protected:
     void BitReverce(double* buf, double* a, int ex);
