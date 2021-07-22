@@ -36,4 +36,4 @@ protected:
     void ComplexMultiply(double &rOutput, double &iOutput, double rInput0, double iInput0, double rInput1, double iInput1);
     double SpReadData(int x);
     double SpReadGauss(int x);
-}
+};

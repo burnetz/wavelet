@@ -2,6 +2,8 @@
 #include "Dwvd00.h"
 #include "Hilbert00.h"
 
+#include <stdio.h>
+
 #define _PI 3.14159265358979323846264338327950288419716939937510
 
 CDwvd00::CDwvd00(){
@@ -64,7 +66,7 @@ bool CDwvd00::Prepare(double* input, int inputN){
     }
     return ret;
 }
-
+//omegaに指定できる周波数は0~PI/4まで
 bool CDwvd00::SetParameters(double sigma, double damp, double omega){
     bool ret = false;
 
@@ -239,3 +241,30 @@ double CDwvd00::SpReadGauss(int x){
     }
     return m_pGauss[n];
 }
+
+#ifdef DWVD_TEST
+
+int main(int argc, char* argv[]){
+    int n;
+
+    scanf("%d", &n);
+
+    double input[n];
+    for (int i = 0; i < n; i++){
+        scanf("%lf", &input[i]);
+    }
+
+    CDwvd00* cdwd = new CDwvd00;
+
+    for(int i = 0; i < 512; i++){
+        cdwd->Prepare(input, n);
+        cdwd->SetParameters(10.0, 0.01, (double)i*_PI/512);
+
+        for(int j = 0; j < n; j++){
+            printf("%.5f ", cdwd->Dwvd(j));
+        }
+        printf("\n");
+    }
+}
+
+#endif
