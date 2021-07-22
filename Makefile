@@ -9,3 +9,6 @@ hilbert00: Hilbert00.cpp
 
 dwvd00: Dwvd00.cpp Hilbert00.cpp Fft00.cpp
 	g++ -lm Dwvd00.cpp Hilbert00.cpp Fft00.cpp -o dwvd00 -D DWVD_TEST
+
+dwvd00sp: Dwvd00.cpp Hilbert00.cpp Fft00.cpp
+	g++ -lm Dwvd00.cpp Hilbert00.cpp Fft00.cpp -o dwvd00sp -D DWVDSP_TEST

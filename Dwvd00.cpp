@@ -269,3 +269,70 @@ int main(int argc, char* argv[]){
 }
 
 #endif
+
+#ifdef DWVDSP_TEST
+
+int main(int argc, char* argv[]){
+    int n;
+
+    scanf("%d", &n);
+
+    double input[n];
+    for (int i = 0; i < n; i++){
+        scanf("%lf", &input[i]);
+    }
+
+    CDwvd00* cdwd = new CDwvd00;
+
+    double matrix[512][n];
+    for(int i = 0; i < 512; i++){
+        cdwd->Prepare(input, n);
+        cdwd->SetParameters(10.0, 0.01, (double)i*_PI/512);
+
+        for(int j = 0; j < n; j++){
+            matrix[i][j] = cdwd->Dwvd(j);
+        }
+    }
+
+    
+    //時間平滑化
+    cdwd->PrepareSp(9.0, 0.01);
+    for(int i = 0; i < 512; i++){
+        for(int j = 0; j < n; j++){
+            matrix[i][j] = cdwd->Sp(matrix[i], n, j);
+        }
+    }
+
+    //転置行列のコピー
+    double matCopy[n][512];
+    for(int i = 0; i < 512; i++){
+        for(int j = 0; j < n; j++){
+            matCopy[j][i] = matrix[i][j];
+        }
+    }
+
+    //周波数平滑化
+    cdwd->PrepareSp(9.0, 0.01);
+    for(int i = 0; i < n; i++){
+        for(int j = 0; j < 512; j++){
+            matCopy[i][j] = cdwd->Sp(matCopy[i], 512, j);
+        }
+    }
+
+    //再度転置による復元
+    for(int i = 0; i < n; i++){
+        for(int j = 0; j < 512; j++){
+            matrix[j][i] = matCopy[i][j];
+        }
+    }
+
+    printf("%d 512\n", n);
+    for(int i = 0; i < 512; i++){
+        for(int j = 0; j < n; j++){
+            printf("%.5f ", matrix[i][j]);
+        }
+        printf("\n");
+    }
+}
+
+#endif
