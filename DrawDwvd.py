@@ -27,6 +27,7 @@ with open(args[1], "r") as f:
 
         matrix.append(vals)
 
+    matdf = pd.DataFrame(matrix)
     plt.figure()
-    sns.heatmap(matrix)
+    sns.heatmap(matdf)
     plt.savefig(args[2])
