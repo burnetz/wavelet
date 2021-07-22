@@ -256,6 +256,7 @@ int main(int argc, char* argv[]){
 
     CDwvd00* cdwd = new CDwvd00;
 
+    printf("%d 512\n", n);
     for(int i = 0; i < 512; i++){
         cdwd->Prepare(input, n);
         cdwd->SetParameters(10.0, 0.01, (double)i*_PI/512);

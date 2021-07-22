@@ -8,4 +8,4 @@ hilbert00: Hilbert00.cpp
 	g++ -lm Hilbert00.cpp Fft00.cpp -o hilbert00 -D HILBERT_TEST
 
 dwvd00: Dwvd00.cpp Hilbert00.cpp Fft00.cpp
-	g++ -lm Dwvd00.cpp Hilbert00.cpp Fft00.cpp -o dvwd00 -D DWVD_TEST
+	g++ -lm Dwvd00.cpp Hilbert00.cpp Fft00.cpp -o dwvd00 -D DWVD_TEST
