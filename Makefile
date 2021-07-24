@@ -12,3 +12,6 @@ dwvd00: Dwvd00.cpp Hilbert00.cpp Fft00.cpp
 
 dwvd00sp: Dwvd00.cpp Hilbert00.cpp Fft00.cpp
 	g++ -lm Dwvd00.cpp Hilbert00.cpp Fft00.cpp -o dwvd00sp -D DWVDSP_TEST
+
+gabor00: Gabor00.cpp
+	g++ -lm Gabor00.cpp -o gabor00 -D GABOR_TEST

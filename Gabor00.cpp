@@ -128,3 +128,31 @@ void CGabor00::ComplexMultiply(double &rOutput, double &iOutput, double rInput0,
     rOutput = rInput0*rInput1 - iInput0*iInput1;
     iOutput = iInput0*rInput1 + rInput0*iInput1;
 }
+
+#ifdef GABOR_TEST
+
+int main(int argc, char* argv[]){
+    int n;
+
+    scanf("%d", &n);
+
+    double input[n];
+    for (int i = 0; i < n; i++){
+        scanf("%lf", &input[i]);
+    }
+
+    CGabor00* cgabor = new CGabor00;
+
+    printf("%d 512\n", n);
+    for(int i = 0; i < 512; i++){
+        cgabor->Prepare(input, n);
+        cgabor->SetParameter(2.0, _PI, (double)n/(i + 1));
+
+        for(int j = 0; j < n; j++){
+            printf("%.5f ", cgabor->Gabor(j));
+        }
+        printf("\n");
+    }
+}
+
+#endif

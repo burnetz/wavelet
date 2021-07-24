@@ -2,7 +2,7 @@ class CGabor00
 {
 public:
     CGabor00();
-    ~CGabor00;
+    ~CGabor00();
 
     bool Prepare(double *input, int inputN);
     bool SetParameter(double sigma, double omega, double a);
