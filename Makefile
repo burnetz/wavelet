@@ -15,3 +15,6 @@ dwvd00sp: Dwvd00.cpp Hilbert00.cpp Fft00.cpp
 
 gabor00: Gabor00.cpp
 	g++ -lm Gabor00.cpp -o gabor00 -D GABOR_TEST
+
+orthomra00: OrthoMra00.cpp
+	g++ -lm OrthoMra00.cpp OrthoWavelet00.cpp Matrix.cpp Interpolation00.cpp Fft00.cpp -o orthomra00 -D ORTHO_MRA_TEST

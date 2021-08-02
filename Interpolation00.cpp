@@ -1,6 +1,7 @@
 #include <math.h>
 #include "Interpolation00.h"
 #include "Fft00.h"
+#include <stdio.h>
 
 #define FFTBUFEX 9
 
@@ -60,7 +61,8 @@ bool CInterpolation00::Inter(double* output, double* input, int inputN, double* 
     int fftbufn = 0x01 << FFTBUFEX;
     int fftn = fftbufn - scalN*2;
 
-    if(m_pBuf != NULL || fftn < 0){
+    if(m_pBuf == NULL || fftn < 0){
+        printf("Error(Interpolation 1)\n");
         return false;
     }
 
@@ -105,10 +107,12 @@ bool CInterpolation00::Inter(double* output, double* input, int inputN, double* 
 
         //FFT
         if(!m_pFft->Fft(m_pBuf0, m_pBuf1, 1)){
+            printf("Error(Interpolation 2)\n");
             return false;
         }
 
         if(!m_pFft->Fft(m_pBuf2, m_pBuf3, 1)){
+            printf("Error(Interpolation 3)\n");
             return false;
         }
 
@@ -119,6 +123,7 @@ bool CInterpolation00::Inter(double* output, double* input, int inputN, double* 
             double temp3 = m_pBuf1[i]*m_pBuf2[i] + m_pBuf0[i]*m_pBuf3[i];
 
             if(temp1 == 0.0){
+                printf("Error(Interpolation 4)\n");
                 return false;
             }
 

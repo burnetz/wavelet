@@ -201,6 +201,8 @@ bool CMatrix::InverseMatrix(int n){
     return true;
 }
 
+
+
 #ifdef MATRIX_TEST
 
 int main(){

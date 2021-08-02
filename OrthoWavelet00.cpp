@@ -190,7 +190,7 @@ double COrthoWavelet00::H1(int n)
     }
 }
 
-//分解数列G0
+//再構成数列G0
 double COrthoWavelet00::G0(int n)
 {
     if (n < m_nPBegin || n > m_nPEnd)
@@ -203,7 +203,7 @@ double COrthoWavelet00::G0(int n)
     }
 }
 
-//分解数列G1
+//再構成数列G1
 double COrthoWavelet00::G1(int n)
 {
     if (n < m_nQBegin || n > m_nQEnd)
@@ -267,7 +267,10 @@ bool COrthoWavelet00::Prepare(int N, int level)
             {
                 if (i * 2 + 1 - j >= 0 && i * 2 + 1 - j < m_nMtxMaxN)
                 {
-                    matrix.m_nInpMatrix[i][j] -= 1.0;
+                    matrix.m_nInpMatrix[i][j] = m_pP0[i*2 + 1 - j];
+                    if(i == j){
+                        matrix.m_nInpMatrix[i][j] -= 1.0;
+                    }
                 }
                 else
                 {
@@ -299,10 +302,12 @@ bool COrthoWavelet00::Prepare(int N, int level)
     }
 
     m_nPBegin = 0;
-    m_nPEnd = m_nPNum + 1;
+    m_nPEnd = m_nPNum - 1;
+
+    m_nQBegin = -m_nPEnd + 1;
     m_nQEnd = 1;
 
-    for (int i = 0; i < m_nPEnd; i++)
+    for (int i = 0; i <= m_nPEnd; i++)
     {
         m_pPBuf0[i] = m_pP0[i];
     }
@@ -327,14 +332,14 @@ bool COrthoWavelet00::Prepare(int N, int level)
 
         for (int j = 0; j <= area; j++)
         {
-            m_pBuf0[j] = m_pBuf1[j];
+            m_pPBuf0[j] = m_pPBuf1[j];
         }
     }
 
     //スケーリング関数の領域は計算の都合上0からにしておく
     //最後に本来の範囲に修正する
     m_nScalingDenomi = 0x01 << m_nLevel;
-    m_nMotherSz = m_nScalingDenomi * m_nPEnd;
+    m_nScalingSz = m_nScalingDenomi * m_nPEnd;
     m_nScalingBegin = 0;
     m_nScalingEnd = m_nScalingDenomi * m_nPEnd;
 
