@@ -225,6 +225,8 @@ int main(int argc, char* argv[]){
         printf("Invalid Value (width or height)\n");
         exit(0);
     }
+    int whitePoint;
+    scanf("%d", &whitePoint);
 
     double* input = new double[w*h];
     for (int i = 0; i < w*h; i++){
@@ -248,6 +250,7 @@ int main(int argc, char* argv[]){
     if(cgortho->Mra(output, input, w, h, level)){
         printf("P2\n");
         printf("%d %d\n", w, h);
+        printf("255\n");
 
         double max = -DBL_MAX;
         double min = DBL_MAX;
