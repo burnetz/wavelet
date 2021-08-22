@@ -7,7 +7,7 @@ class CGraphOrthoMra00{
 
     bool Prepare(int wName, int maxX, int maxY);
     bool Mra(double* output, double* input, int nX, int nY, int level);
-    bool IMra(double* output, double* input, int nX, int nY, int level);
+    bool IMra(double* output, double* input, int nX, int nY, int level, double delta);
 
     protected:
     COrthoMra00* m_pMra;

@@ -129,7 +129,7 @@ bool CGraphOrthoMra00::Mra(double* output, double* input, int nX, int nY, int le
     return true;
 }
 
-bool CGraphOrthoMra00::IMra(double* output, double* input, int nX, int nY, int level){
+bool CGraphOrthoMra00::IMra(double* output, double* input, int nX, int nY, int level, double delta = 0){
     if(nX > m_nMaxX || nY > m_nMaxY || level < 1 || level > MAXLEVEL ){
         return false;
     }
@@ -189,8 +189,20 @@ bool CGraphOrthoMra00::IMra(double* output, double* input, int nX, int nY, int l
         }
     }
 
+    double lambda = 3*delta;
     for(int i = 0; i < nX*nY ; i++){
-        output[i] = m_pBuf[2][i];
+        double tmp = m_pBuf[2][i];
+
+        if(tmp < -lambda){
+            tmp += lambda;
+        }
+        else if(tmp > lambda){
+            tmp -= lambda;
+        }
+        else{
+            tmp = 0;
+        }
+        output[i] = tmp;
     }
 
     return true;
@@ -341,6 +353,83 @@ int main(int argc, char* argv[]){
                     printf("error (%d)\n", tmp);
                     return 0;
                 }*/
+                printf("%d\n", tmp);
+            }
+        }
+    }
+}
+
+#endif
+
+#ifdef GRAPH_ORTHO_NOISE_TEST
+
+int main(int argc, char* argv[]){
+    if(argc != 2){
+        printf("please set the value \"delta\"\n");
+        return 0;
+    }
+
+    int n;
+
+    //入力形式はPGMであること
+    //GIMPで生成したPGMなら恐らく基本的に大丈夫
+    char strBuf[128];
+    fgets(strBuf, sizeof(strBuf), stdin);
+    if(strBuf[0] != 'P' || strBuf[1] != '2'){
+        printf("Invalid File Format!\n");
+        exit(0);
+    }
+
+    int w = 0, h = 0;
+    while(true){
+        fgets(strBuf, sizeof(strBuf), stdin);
+        if(strBuf[0] == '#'){
+            continue;
+        }
+        sscanf(strBuf, "%d %d", &w, &h);
+        break;
+    }
+
+    if(w == 0 || h == 0){
+        printf("Invalid Value (width or height)\n");
+        exit(0);
+    }
+    int whitePoint;
+    scanf("%d", &whitePoint);
+
+    double* input = new double[w*h];
+    for (int i = 0; i < w*h; i++){
+        scanf("%lf", &input[i]);
+        input[i];
+    }
+
+    CGraphOrthoMra00 *cgortho = new CGraphOrthoMra00;
+    //現状、タイプは11しか選べない
+    if(!cgortho->Prepare(11, w, h)){
+        printf("prepare failed\n");
+        return 0;
+    }
+
+    double* output = new double[w*h];
+    for(int i = 0; i < w*h; i++){
+        output[i] = 0;
+    }
+
+    int level = 3;
+    double delta = atof(argv[1]);
+    if(delta < 0){
+        printf("Invalid value \"delta\"\n");
+        return 0;
+    }
+    if(cgortho->Mra(output, input, w, h, level)){
+        if(cgortho->IMra(input, output, w, h, level, delta)){
+            printf("P2\n");
+            printf("%d %d\n", w, h);
+            printf("255\n");
+
+            for(int i = 0; i < w*h; i++){
+                int tmp = input[i];
+
                 printf("%d\n", tmp);
             }
         }
