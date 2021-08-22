@@ -184,7 +184,7 @@ bool CGraphOrthoMra00::IMra(double* output, double* input, int nX, int nY, int l
         //低域成分LLの移動
         for(int y = 0; y < ysz; y++){
             for(int x = 0; x < xsz ;x++){
-                m_pBuf[0][x + y*m_nX] = m_pBuf[2][x + y+m_nX];
+                m_pBuf[0][x + y*m_nX] = m_pBuf[2][x + y*m_nX];
             }
         }
     }
@@ -272,6 +272,77 @@ int main(int argc, char* argv[]){
                 return 0;
             }
             printf("%d\n", (int)(output[i]/max*255));
+        }
+    }
+}
+
+#endif
+
+#ifdef GRAPH_ORTHO_I_TEST
+
+int main(int argc, char* argv[]){
+    int n;
+
+    //入力形式はPGMであること
+    //GIMPで生成したPGMなら恐らく基本的に大丈夫
+    char strBuf[128];
+    fgets(strBuf, sizeof(strBuf), stdin);
+    if(strBuf[0] != 'P' || strBuf[1] != '2'){
+        printf("Invalid File Format!\n");
+        exit(0);
+    }
+
+    int w = 0, h = 0;
+    while(true){
+        fgets(strBuf, sizeof(strBuf), stdin);
+        if(strBuf[0] == '#'){
+            continue;
+        }
+        sscanf(strBuf, "%d %d", &w, &h);
+        break;
+    }
+
+    if(w == 0 || h == 0){
+        printf("Invalid Value (width or height)\n");
+        exit(0);
+    }
+    int whitePoint;
+    scanf("%d", &whitePoint);
+
+    double* input = new double[w*h];
+    for (int i = 0; i < w*h; i++){
+        scanf("%lf", &input[i]);
+        input[i];
+    }
+
+    CGraphOrthoMra00 *cgortho = new CGraphOrthoMra00;
+    //現状、タイプは11しか選べない
+    if(!cgortho->Prepare(11, w, h)){
+        printf("prepare failed\n");
+        return 0;
+    }
+
+    double* output = new double[w*h];
+    for(int i = 0; i < w*h; i++){
+        output[i] = 0;
+    }
+
+    int level = 3;
+    if(cgortho->Mra(output, input, w, h, level)){
+        if(cgortho->IMra(input, output, w, h, level)){
+            printf("P2\n");
+            printf("%d %d\n", w, h);
+            printf("255\n");
+
+            for(int i = 0; i < w*h; i++){
+                int tmp = input[i];
+                /*
+                if(tmp > 255 || tmp < 0){
+                    printf("error (%d)\n", tmp);
+                    return 0;
+                }*/
+                printf("%d\n", tmp);
+            }
         }
     }
 }

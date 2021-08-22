@@ -25,22 +25,22 @@ class COrthoWavelet00{
 
     //再構成数列H0開始
     int G0Begin(){
-        return m_nPEnd;
+        return m_nPBegin;
     }
 
     //再構成数列H0終了
     int G0End(){
-        return m_nPBegin;
+        return m_nPEnd;
     }
 
     //再構成数列H1開始
     int G1Begin(){
-        return m_nQEnd;
+        return m_nQBegin;
     }
 
     //再構成数列H1終了
     int G1End(){
-        return m_nQBegin;
+        return m_nQEnd;
     }
 
     bool Prepare(int N, int level);

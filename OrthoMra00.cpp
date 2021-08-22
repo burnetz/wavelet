@@ -145,6 +145,10 @@ bool COrthoMra00::IMra(double* output, double* input, int level, int mul, int mo
         return false;
     }
 
+    for(int i = 0; i < m_nN; i++){
+        m_pBuf0[i] = input[i];
+    }
+
     int begin1 = m_pOrtho->G0Begin();
     int end1 = m_pOrtho->G0End();
     int begin2 = m_pOrtho->G1Begin();
@@ -155,20 +159,21 @@ bool COrthoMra00::IMra(double* output, double* input, int level, int mul, int mo
         int n = 0;
         int sz = m_nN >> i;
 
-        for(int k = 0; k < sz*2; k++){
-            sum = 0;
-            for(int L = k/2 - end1/2 - 5; L <= k/2 - begin1/2 + 5; L++){
-                sum += m_pOrtho->G0(k - 2*L)*Read(L, sz, 0);
+        if(sz > 0){
+            for(int k = 0; k < sz*2; k++){
+                sum = 0;
+                for(int L = k/2 - end1/2 - 5; L <= k/2 - begin1/2 + 5; L++){
+                    sum += m_pOrtho->G0(k - 2*L)*Read(L, sz, 0);
+                }
+                for(int L = k/2 - end2/2 - 5; L <= k/2 - begin2/2 + 5; L++){
+                    sum += m_pOrtho->G1(k - 2*L)*Read(L, sz, sz);
+                }
+                m_pBuf1[n] = sum;
+                n++;
             }
-            for(int L = k/2 - end2/2 - 5; L <= k/2 - begin2/2 + 5; L++){
-                sum += m_pOrtho->G1(k - 2*L)*Read(L, sz, sz);
+            for(int j = 0; j < sz*2; j++){
+                m_pBuf0[j] = m_pBuf1[j];
             }
-            m_pBuf1[n] = sum;
-            n++;
-        }
-
-        for(int j = 0; j < sz*2; j++){
-            m_pBuf0[j] = m_pBuf1[j];
         }
     }
 
@@ -242,6 +247,37 @@ int main(int argc, char* argv[]){
         }
         printf("\n");
     }*/
+}
+
+#endif
+
+#ifdef ORTHO_MRA_I_TEST
+
+int main(){
+    int n = 12;
+
+    double input[12] = {0,1,2,3,4,5,6,-1,-2,-3,-4,-4};
+
+    COrthoMra00* cmra = new COrthoMra00();
+    //現状、タイプは11しか選べない
+    if(!cmra->Prepare(11, n)){
+        printf("prepare failed\n");
+        return 0;
+    }
+
+    double output[n];
+    for(int i = 0; i < n; i++){
+        output[i] = 0;
+    }
+
+    int level = 3;
+    cmra->Mra(output, input, level, (int)n/pow(2, level), 0);
+    cmra->IMra(input, output, level, (int)n/pow(2, level), 0);
+
+    for(int i = 0; i < n; i++){
+        printf("%f ", input[i]);
+    }
+    printf("\n");
 }
 
 #endif
