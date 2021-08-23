@@ -437,3 +437,88 @@ int main(int argc, char* argv[]){
 }
 
 #endif
+
+#ifdef GRAPH_ORTHO_SHARP_TEST
+
+int main(int argc, char* argv[]){
+
+    int n;
+
+    //入力形式はPGMであること
+    //GIMPで生成したPGMなら恐らく基本的に大丈夫
+    char strBuf[128];
+    fgets(strBuf, sizeof(strBuf), stdin);
+    if(strBuf[0] != 'P' || strBuf[1] != '2'){
+        printf("Invalid File Format!\n");
+        exit(0);
+    }
+
+    int w = 0, h = 0;
+    while(true){
+        fgets(strBuf, sizeof(strBuf), stdin);
+        if(strBuf[0] == '#'){
+            continue;
+        }
+        sscanf(strBuf, "%d %d", &w, &h);
+        break;
+    }
+
+    if(w == 0 || h == 0){
+        printf("Invalid Value (width or height)\n");
+        exit(0);
+    }
+    int whitePoint;
+    scanf("%d", &whitePoint);
+
+    double* input = new double[w*h];
+    for (int i = 0; i < w*h; i++){
+        scanf("%lf", &input[i]);
+        input[i];
+    }
+
+    CGraphOrthoMra00 *cgortho = new CGraphOrthoMra00;
+    //現状、タイプは11しか選べない
+    if(!cgortho->Prepare(11, w, h)){
+        printf("prepare failed\n");
+        return 0;
+    }
+
+    double* output = new double[w*h];
+    for(int i = 0; i < w*h; i++){
+        output[i] = 0;
+    }
+
+    int level = 2;
+
+    if(cgortho->Mra(output, input, w, h, level)){
+        //level2 LL以外の全てのウェーブレット係数を2倍にする
+        for(int i = 0; i < w*h; i++){
+            int x = i%w;
+            int y = i/w;
+            if(x > w/4 && y > h/4){
+                //printf("%d %d\n", x, y);
+                output[i] *= 2.0;
+            }
+        }
+        
+        if(cgortho->IMra(input, output, w, h, level)){
+            printf("P2\n");
+            printf("%d %d\n", w, h);
+            printf("255\n");
+
+            for(int i = 0; i < w*h; i++){
+                int tmp = input[i];
+                if(tmp < 0){
+                    tmp = 0;
+                }
+                if(tmp > 255){
+                    tmp = 255;
+                }
+
+                printf("%d\n", tmp);
+            }
+        }
+    }
+}
+
+#endif
