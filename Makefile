@@ -33,3 +33,6 @@ noisecancel00: GraphOrthoMra00.cpp
 
 sharpening00: GraphOrthoMra00.cpp
 	g++ -lm GraphOrthoMra00.cpp OrthoMra00.cpp OrthoWavelet00.cpp Matrix.cpp Interpolation00.cpp Fft00.cpp -o sharpening00 -D GRAPH_ORTHO_SHARP_TEST
+
+contour00: GraphOrthoMra00.cpp
+	g++ -lm GraphOrthoMra00.cpp OrthoMra00.cpp OrthoWavelet00.cpp Matrix.cpp Interpolation00.cpp Fft00.cpp -o contour00 -D GRAPH_ORTHO_CONTOUR_TEST
