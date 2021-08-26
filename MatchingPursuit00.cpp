@@ -1,4 +1,6 @@
-#include <Math.h>
+#include <math.h>
+#include <stdio.h>
+#include <stdlib.h>
 #include "MatchingPursuit00.h"
 #include "OrthoWavelet00.h"
 #include "OrthoMra00.h"
@@ -502,3 +504,50 @@ double CMatchingPursuit00::Epsilon()
 {
 	return m_nEpsilon;
 }
+
+#ifdef MATCHING_TEST
+
+int main(){
+	int n = 1024;
+
+	double input[n];
+
+	for(int i = 0; i < n; i++){
+		if((64 + i)%129 == 0){
+			input[i] = 1.0;
+		}
+		else{
+			input[i] = 0.0;
+		}
+	}
+
+	CMatchingPursuit00* cmatch = new CMatchingPursuit00();
+
+	int level = 4;
+	//3次のO Splineは22
+	cmatch->Prepare(22, n, level);
+
+	double *output[level + 2];
+
+	for(int i = 0; i < level + 2; i++){
+		output[i] = (double*)malloc(sizeof(double)*n);
+	}
+	cmatch->Pursuit(output, input, n, level, 0.99999, 0.00001, 1, 0);
+
+	printf("%d %d\n", level, n);
+
+	for(int i = 0; i < n; i++){
+		printf("%d %f\n", i, input[i]);
+	}
+	//各レベルの係数
+	for(int i = 1; i <= level ; i++){
+		for(int j = 0; j < n; j++){
+			printf("%d %f\n", j, output[i][j]);
+		}
+	}
+	//低域成分
+	for(int j = 0; j < n; j++){
+			printf("%d %f\n", j, output[0][j]);
+	}
+}
+#endif

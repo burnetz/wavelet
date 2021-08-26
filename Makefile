@@ -36,3 +36,6 @@ sharpening00: GraphOrthoMra00.cpp
 
 contour00: GraphOrthoMra00.cpp
 	g++ -lm GraphOrthoMra00.cpp OrthoMra00.cpp OrthoWavelet00.cpp Matrix.cpp Interpolation00.cpp Fft00.cpp -o contour00 -D GRAPH_ORTHO_CONTOUR_TEST
+
+matchingpursuit00: MatchingPursuit00.cpp
+	g++ -lm MatchingPursuit00.cpp OrthoMra00.cpp OrthoWavelet00.cpp Matrix.cpp Interpolation00.cpp Fft00.cpp -o matchingpursuit00 -D MATCHING_TEST
