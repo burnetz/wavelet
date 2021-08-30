@@ -39,3 +39,12 @@ contour00: GraphOrthoMra00.cpp
 
 matchingpursuit00: MatchingPursuit00.cpp
 	g++ -lm MatchingPursuit00.cpp OrthoMra00.cpp OrthoWavelet00.cpp Matrix.cpp Interpolation00.cpp Fft00.cpp -o matchingpursuit00 -D MATCHING_TEST
+
+graphmatchingpursuit00: GraphMatchingPursuit00.cpp
+	g++ -lm GraphMatchingPursuit00.cpp MatchingPursuit00.cpp OrthoMra00.cpp OrthoWavelet00.cpp Matrix.cpp Interpolation00.cpp Fft00.cpp -o graphmatchingpursuit00 -D GRAPH_MATCHING_TEST
+
+graphmatchingsharp00: GraphMatchingPursuit00.cpp
+	g++ -lm GraphMatchingPursuit00.cpp MatchingPursuit00.cpp OrthoMra00.cpp OrthoWavelet00.cpp Matrix.cpp Interpolation00.cpp Fft00.cpp -o graphmatchingsharp00 -D GRAPH_MATCHING_SHARP_TEST
+
+graphmatchingcontour00: GraphMatchingPursuit00.cpp
+	g++ -lm GraphMatchingPursuit00.cpp MatchingPursuit00.cpp OrthoMra00.cpp OrthoWavelet00.cpp Matrix.cpp Interpolation00.cpp Fft00.cpp -o graphmatchingcontour00 -D GRAPH_MATCHING_CONTOUR_TEST
